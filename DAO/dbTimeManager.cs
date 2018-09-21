@@ -4,6 +4,7 @@ namespace DAO
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
+    using Entities;
 
     public partial class dbTimeManager : DbContext
     {
@@ -19,7 +20,6 @@ namespace DAO
         public virtual DbSet<Contrat> Contrats { get; set; }
         public virtual DbSet<DemandeConge> DemandeConges { get; set; }
         public virtual DbSet<Domaine> Domaines { get; set; }
-        public virtual DbSet<DomaineCompetance> DomaineCompetances { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<EmployeeCompetance> EmployeeCompetances { get; set; }
         public virtual DbSet<EmployeeConge> EmployeeConges { get; set; }
@@ -33,7 +33,6 @@ namespace DAO
         public virtual DbSet<PrioriteConge> PrioriteConges { get; set; }
         public virtual DbSet<Salaire> Salaires { get; set; }
         public virtual DbSet<Societe> Societes { get; set; }
-        public virtual DbSet<SocieteContact> SocieteContacts { get; set; }
         public virtual DbSet<TypeCompetance> TypeCompetances { get; set; }
         public virtual DbSet<TypeConge> TypeConges { get; set; }
         public virtual DbSet<TypeEmployee> TypeEmployees { get; set; }
@@ -74,11 +73,6 @@ namespace DAO
 
             modelBuilder.Entity<Employee>()
                 .Property(e => e.Note)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<ValidationCRA>()
-                .Property(e => e.IdValidationCRA)
-                .IsFixedLength()
                 .IsUnicode(false);
         }
     }

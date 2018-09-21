@@ -1,0 +1,65 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #> 
+<#@ assembly name="$(SolutionDir)Entities\bin\Debug\Entities.dll" #>
+<#@ import namespace="Entities" #> 
+<# 
+	var entities = typeof(Entities.EntityBase).Assembly.GetTypes();
+	foreach(var entity in entities)
+    {
+#>
+using System;
+
+namespace DTOs
+{
+	public class <#= entity.Name #>Dto : IDto
+	{
+	<# var properties=entity.GetProperties(); #>
+	<# /**********Properties**********/ #>
+#region Properties
+	<# foreach(var property in properties){ 
+	if (Nullable.GetUnderlyingType(property.PropertyType) == null)
+	{
+		if(property.PropertyType.BaseType==typeof(EntityBase))
+		{
+	#>
+	public <#= property.PropertyType.Name#>Dto <#= property.Name=="UserInsert" || property.Name=="UserUpdate"?property.Name:property.Name+"Dto"#> {get; set;}
+<#}
+		else
+		{
+	#>
+	public <#= property.PropertyType.Name#> <#= property.Name#> {get; set;}
+<#}}
+	else
+	{#>
+	public <#= Nullable.GetUnderlyingType(property.PropertyType)#>? <#= property.Name#> {get; set;}
+<#}
+	#>
+	<# } #>
+	#endregion Properties
+	<# /**********EndProperties**********/ #>}
+
+}
+
+<# 
+SaveOutput(entity.Name + "Dto.cs"); 
+    }
+#>
+ 
+<#+
+  // Insert any template procedures here
+private void SaveOutput(string outputFileName) 
+{
+	string templateDirectory = Path.GetDirectoryName(Host.TemplateFile);
+	string outputFilePath = Path.Combine(templateDirectory, outputFileName);
+	File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+	this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+}
+#>
